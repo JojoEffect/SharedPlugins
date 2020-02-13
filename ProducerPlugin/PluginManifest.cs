@@ -9,8 +9,8 @@
         public void ConfigureServices(IServiceCollection services)
         {
             Type serviceCollectionType = services.GetType();
-            ConsoleLog.WriteAssemblyInformation("ProviderPlugin - PluginManifest", serviceCollectionType, typeof(IProducerPlugin), typeof(ProducerPlugin));
-            services.AddTransient<IProducerPlugin, ProducerPlugin>();
+            ConsoleLog.WriteAssemblyInformation("ProducerPlugin - PluginManifest", serviceCollectionType, typeof(IProducerPlugin), typeof(ProducerPlugin));
+            services.AddProducer<ProducerPlugin>();
         }
     }
 }

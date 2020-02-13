@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace ConsumerPlugin
+﻿namespace ConsumerPlugin
 {
+    using System;
     using Contracts;
     using ProducerPlugin;
 

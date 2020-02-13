@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Contracts
+﻿namespace Contracts
 {
     public interface IProducerPlugin : IPlugin
     {

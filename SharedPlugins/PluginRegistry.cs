@@ -1,9 +1,4 @@
-﻿// //////////////////////////////////////////////////////////////////////////////////
-// /                  Copyright (c) 2020 TRUMPF Laser GmbH                          /
-// /        All Rights Reserved, see LICENSE.TXT for further details                /
-// //////////////////////////////////////////////////////////////////////////////////
-
-namespace SharedPlugins
+﻿namespace SharedPlugins
 {
     using System;
     using System.Collections.Generic;

@@ -1,9 +1,4 @@
-﻿// //////////////////////////////////////////////////////////////////////////////////
-// /                  Copyright (c) 2020 TRUMPF Laser GmbH                          /
-// /        All Rights Reserved, see LICENSE.TXT for further details                /
-// //////////////////////////////////////////////////////////////////////////////////
-
-namespace ConsumerPlugin
+﻿namespace ConsumerPlugin
 {
     using System;
     using Contracts;

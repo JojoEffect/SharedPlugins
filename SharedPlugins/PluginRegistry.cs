@@ -5,19 +5,17 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.Runtime.Loader;
     using Contracts;
     using McMaster.NETCore.Plugins;
     using Microsoft.Extensions.DependencyInjection;
 
     public class PluginRegistry
     {
-        private readonly AssemblyLoadContext sharedPluginsContext = new AssemblyLoadContext("SharedPlugins");
+        private readonly List<Type> sharedTypes = new List<Type>();
         private readonly Dictionary<string, (Type pluginType, PluginLoader pluginLoader)> registry = new Dictionary<string, (Type pluginType, PluginLoader pluginLoader)>();
 
         public PluginRegistry(string producerPluginsPath, string consumerPluginsPath)
         {
-            this.CreateSharedPluginsContext(producerPluginsPath);
             this.RegisterPlugins(producerPluginsPath);
             this.RegisterPlugins(consumerPluginsPath);
         }
@@ -61,23 +59,6 @@
             return pluginServices.BuildServiceProvider();
         }
 
-        private void CreateSharedPluginsContext(string pluginFolder)
-        {
-            foreach (string pluginDirectory in Directory.GetDirectories(pluginFolder))
-            {
-                string? pluginName = Path.GetFileName(pluginDirectory);
-                string assemblyFile = Path.Combine(pluginDirectory, pluginName + ".dll");
-
-                this.sharedPluginsContext.LoadFromAssemblyPath(assemblyFile);
-                Assembly sharedAssembly = this.sharedPluginsContext.Assemblies.First();
-                Type[] allSharedTypes = sharedAssembly.GetTypes();
-
-                IEnumerable<Type> producerPluginTypes = allSharedTypes.Where(t => typeof(IProducerPlugin).IsAssignableFrom(t) && !t.IsAbstract);
-
-                ConsoleLog.WriteAssemblyInformation("SHARED PLUGINS", producerPluginTypes.ToArray());
-            }
-        }
-
         private void RegisterPlugins(string pluginFolder)
         {
             foreach (string pluginDirectory in Directory.GetDirectories(pluginFolder))
@@ -86,6 +67,7 @@
                 string assemblyFile = Path.Combine(pluginDirectory, pluginName + ".dll");
 
                 PluginLoader pluginLoader = this.CreatePluginLoader(assemblyFile, out IEnumerable<Type> foundPluginTypes);
+                this.sharedTypes.AddRange(foundPluginTypes.Where(t => typeof(IPlugin).IsAssignableFrom(t) && !t.IsAbstract));
 
                 foreach (Type pluginType in foundPluginTypes)
                 {
@@ -99,11 +81,10 @@
             PluginLoader loader = PluginLoader.CreateFromAssemblyFile(
                 assemblyFile: assemblyFile,
                 true,
-                sharedTypes: Array.Empty<Type>(),
+                // Here we share all producer plugin types
+                sharedTypes: this.sharedTypes.ToArray(),
                 config =>
                 {
-                    // Here we share all producer plugin types
-                    config.DefaultContext = this.sharedPluginsContext;
                     config.PreferSharedTypes = true;
                 });
 

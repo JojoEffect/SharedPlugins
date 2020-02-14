@@ -1,0 +1,48 @@
+@startuml SharedPlugins_Concept_01
+
+skinparam component {
+	backgroundColor<<Assembly Reference>> DarkKhaki
+}
+
+package "MyProducerPlugin ManagedLoadContext" as Producer_Context {
+  Magic_Context <.[#blue]. Producer_Context : use as default context
+  [MyProducerPlugin.dll] <<Assembly Reference>> as Producer_Plugin_Ref
+  [Contracts.dll v1.2.0] <<Assembly Reference>> as Producer_Contracts
+  [Dependency_A.dll v1.1.0] as Producer_Dependency_A #red
+  note bottom of Producer_Dependency_A
+    this dependency can not be resolved
+    since the plugin type will be 
+    instantiated in MagicContext
+  end note
+}
+
+package "MyConsumerPlugin ManagedLoadContext" as Consumer_Context {
+  [MyConsumerPlugin.dll] -- MyConsumer
+  [MyConsumerPlugin.dll] -- MyConsumerManifest
+  [Contracts.dll v1.1.0] <<Assembly Reference>> as Consumer_Contracts
+  [MyProducerPlugin.dll ] <<Assembly Reference>> as Producer_Plugin_Ref_2
+  [Dependency_A.dll v1.0.0]
+  note bottom of Consumer_Contracts
+    this context will receive contracts 
+        from host via shared types 
+        (so this will have the version from the host)
+  end note
+
+}
+
+package "MagicContext" as Magic_Context{
+  Magic_Context <.[#blue]. Consumer_Context : use as default context
+  [MyProducerPlugin.dll  ] <.[#red]. Producer_Plugin_Ref : reference
+  [MyProducerPlugin.dll  ] <.[#red]. Producer_Plugin_Ref_2 : reference
+  [MyProducerPlugin.dll  ] -- MyProducer
+  [MyProducerPlugin.dll  ] -- MyProducerManifest
+}
+
+package "DefaultContext" as Default_Context{
+  Default_Context <.[#blue]. Magic_Context : use as default context
+  Default_Context -[#green]-> Consumer_Context : provide shared types
+  Default_Context -[#green]-> Producer_Context : provide shared types
+  [Contracts.dll v1.2.0]
+}
+
+@enduml

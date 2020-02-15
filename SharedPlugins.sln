@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsumerPlugin", "ConsumerP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlcTest", "AlcTest\AlcTest.csproj", "{AD8E9BA9-733C-4927-A7A3-3BF4A360E2E8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "McMaster.NETCore.Plugins", "..\..\DotNetCorePlugins-master\src\Plugins\McMaster.NETCore.Plugins.csproj", "{AA2CE90B-0FC8-4667-AEC6-70FD0F60D52F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,10 +39,6 @@ Global
 		{AD8E9BA9-733C-4927-A7A3-3BF4A360E2E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD8E9BA9-733C-4927-A7A3-3BF4A360E2E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD8E9BA9-733C-4927-A7A3-3BF4A360E2E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA2CE90B-0FC8-4667-AEC6-70FD0F60D52F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA2CE90B-0FC8-4667-AEC6-70FD0F60D52F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA2CE90B-0FC8-4667-AEC6-70FD0F60D52F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA2CE90B-0FC8-4667-AEC6-70FD0F60D52F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

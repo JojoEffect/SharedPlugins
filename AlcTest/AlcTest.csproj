@@ -6,7 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\DotNetCorePlugins-master\src\Plugins\McMaster.NETCore.Plugins.csproj" />
+    <PackageReference Include="McMaster.NETCore.Plugins" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Contracts\Contracts.csproj" />
   </ItemGroup>
 

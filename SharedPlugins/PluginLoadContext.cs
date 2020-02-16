@@ -1,9 +1,4 @@
-﻿// //////////////////////////////////////////////////////////////////////////////////
-// /                  Copyright (c) 2020 TRUMPF Laser GmbH                          /
-// /        All Rights Reserved, see LICENSE.TXT for further details                /
-// //////////////////////////////////////////////////////////////////////////////////
-
-namespace SharedPlugins
+﻿namespace SharedPlugins
 {
     using System;
     using System.Collections;
@@ -16,6 +11,7 @@ namespace SharedPlugins
     public class PluginLoadContext : AssemblyLoadContext
     {
         private readonly string pluginAssemblyPath;
+        private readonly AssemblyDependencyResolver assemblyDependencyResolver;
         private readonly AssemblyLoadRouter assemblyLoadRouter;
         private readonly AssemblyLoadContext defaultLoadContext;
         private readonly HashSet<string> sharedAssemblies = new HashSet<string>();
@@ -31,6 +27,7 @@ namespace SharedPlugins
             : base(Path.GetFileNameWithoutExtension(pluginAssemblyPath), isCollectible)
         {
             this.pluginAssemblyPath = pluginAssemblyPath;
+            this.assemblyDependencyResolver = new AssemblyDependencyResolver(this.pluginAssemblyPath);
             this.assemblyLoadRouter = assemblyLoadRouter;
             this.defaultLoadContext = defaultLoadContext;
             this.preferDefaultContext = preferDefaultContext;
@@ -53,20 +50,23 @@ namespace SharedPlugins
             Assembly? routerAssembly = this.assemblyLoadRouter.RouteAssemblyLoad(assemblyName);
             if (routerAssembly != null) return routerAssembly;
 
-            if (this.preferDefaultContext && this.sharedAssemblies.Contains(assemblyName.Name))
+            if (this.preferDefaultContext || this.sharedAssemblies.Contains(assemblyName.Name))
             {
-                Assembly? defaultAssembly = this.defaultLoadContext.LoadFromAssemblyName(assemblyName);
+                try
+                {
+                    Assembly? defaultAssembly = this.defaultLoadContext.LoadFromAssemblyName(assemblyName);
 
-                if (defaultAssembly != null) return defaultAssembly;
+                    if (defaultAssembly != null) return defaultAssembly;
+                }
+                catch (Exception)
+                {
+                }
             }
 
-            string? baseDirectory = Path.GetDirectoryName(this.pluginAssemblyPath);
-
-            string resourcePath = Path.Combine(baseDirectory, assemblyName.CultureName, assemblyName.Name + ".dll");
-
-            if (File.Exists(resourcePath))
+            string? assemblyPath = this.assemblyDependencyResolver.ResolveAssemblyToPath(assemblyName);
+            if (!string.IsNullOrEmpty(assemblyPath) && File.Exists(assemblyPath))
             {
-                return this.LoadFromAssemblyPath(resourcePath);
+                return this.LoadFromAssemblyPath(assemblyPath);
             }
 
             return null;

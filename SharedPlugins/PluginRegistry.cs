@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.Loader;
     using Contracts;
     using McMaster.NETCore.Plugins;
     using Microsoft.Extensions.DependencyInjection;
@@ -12,12 +13,27 @@
     public class PluginRegistry
     {
         private readonly List<Type> sharedTypes = new List<Type>();
+        //private readonly List<Type> sharedTypes = new List<Type> {typeof(IPlugin), typeof(IPluginManifest), typeof(IProducerPlugin), typeof(IConsumerPlugin), typeof(ConsoleLog), typeof(PluginExtensions) };
         private readonly Dictionary<string, (Type pluginType, PluginLoader pluginLoader)> registry = new Dictionary<string, (Type pluginType, PluginLoader pluginLoader)>();
 
         public PluginRegistry(string producerPluginsPath, string consumerPluginsPath)
         {
+            AssemblyLoadContext.Default.Resolving += this.SharedPluginsContextOnResolving;
+
             this.RegisterPlugins(producerPluginsPath);
-            this.RegisterPlugins(consumerPluginsPath);
+            //this.RegisterPlugins(consumerPluginsPath);
+        }
+
+        private Assembly? SharedPluginsContextOnResolving(AssemblyLoadContext arg1, AssemblyName arg2)
+        {
+            ConsoleLog.WriteResolvingEvent(arg1, arg2);
+
+            if (arg1.Name == "SharedPlugins")
+            {
+                return Assembly.LoadFrom("C:\\Users\\TauberJo\\source\\repos\\SharedPlugins\\SharedPlugins\\bin\\Debug\\netcoreapp3.0\\plugins\\producer\\ProducerPlugin.ProducerPlugin\\Newtonsoft.Json.dll");
+            }
+
+            return null;
         }
 
         public IPlugin GetPlugin(string typeName)
@@ -86,6 +102,7 @@
                 config =>
                 {
                     config.PreferSharedTypes = true;
+                    //config.DefaultContext = AssemblyLoadContext.Default;
                 });
 
             Assembly pluginAssembly = loader.LoadDefaultAssembly();

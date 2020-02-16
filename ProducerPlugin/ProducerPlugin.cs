@@ -2,6 +2,7 @@
 {
     using System;
     using Contracts;
+    using Newtonsoft.Json;
 
     public class ProducerPlugin : IProducerPlugin
     {
@@ -9,7 +10,7 @@
         {
             Type providerType = this.GetType();
 
-            ConsoleLog.WriteAssemblyInformation("ProducerPlugin - Constructor", providerType);
+            ConsoleLog.WriteAssemblyInformation("ProducerPlugin - Constructor", providerType, typeof(JsonConvert));
         }
     }
 }

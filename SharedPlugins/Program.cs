@@ -13,9 +13,9 @@
             PluginRegistry pluginRegistry = new PluginRegistry(producerPluginsPath, consumerPluginsPath);
 
             IProducerPlugin producerPlugin = pluginRegistry.GetPlugin<IProducerPlugin>("ProducerPlugin.ProducerPlugin");
-            IConsumerPlugin consumerPlugin = pluginRegistry.GetPlugin<IConsumerPlugin>("ConsumerPlugin.ConsumerPlugin");
+            //IConsumerPlugin consumerPlugin = pluginRegistry.GetPlugin<IConsumerPlugin>("ConsumerPlugin.ConsumerPlugin");
 
-            consumerPlugin.SetProducer(producerPlugin);
+            //consumerPlugin.SetProducer(producerPlugin);
         }
     }
 }

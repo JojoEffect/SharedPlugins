@@ -5,9 +5,9 @@
     using Microsoft.Extensions.DependencyInjection;
     using ProducerPlugin;
 
-    public class PluginManifest : PluginManifestBase
+    public class PluginManifest : IPluginManifest
     {
-        protected override void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             Type serviceCollectionType = services.GetType();
 

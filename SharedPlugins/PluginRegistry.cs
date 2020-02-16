@@ -19,10 +19,8 @@
             typeof(IPlugin),
             typeof(IProducerPlugin),
             typeof(IConsumerPlugin),
-            typeof(PluginManifestBase),
             typeof(ConsoleLog),
             typeof(PluginExtensions),
-            typeof(PluginManifestBase)
         };
 
         public PluginRegistry(string producerPluginsPath, string consumerPluginsPath)
@@ -78,11 +76,13 @@
             if (!(Activator.CreateInstance(pluginManifestType) is IPluginManifest pluginManifest))
                 throw new Exception($"The implementation of '{typeof(IPluginManifest)}' must have a parameter-less constructor.");
 
-            IServiceCollection hostServices = new ServiceCollection();
+            IServiceCollection pluginServices = new ServiceCollection();
 
             //Add host services
 
-            return pluginManifest.GetServiceProvider(hostServices);
+            pluginManifest.ConfigureServices(pluginServices);
+
+            return pluginServices.BuildServiceProvider();
         }
 
         private void RegisterPlugins(string pluginFolder)

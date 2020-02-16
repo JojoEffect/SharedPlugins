@@ -1,0 +1,51 @@
+@startuml SharedPlugins_Concept_03
+
+skinparam component {
+    backgroundColor<<Assembly Reference>> DarkKhaki
+}
+
+package "MyProducerPlugin PluginLoadContext" as Producer_Context {
+    [MyProducerPlugin.dll] as Producer_Plugin_Dll
+    [Contracts.dll v1.2.0] <<Assembly Reference>> as Producer_Contracts
+    [Dependency_A.dll v1.1.0]
+}
+
+package "MyConsumerPlugin PluginLoadContext" as Consumer_Context {
+    
+    [MyConsumerPlugin.dll] -- MyConsumer
+    [MyConsumerPlugin.dll] -- MyConsumerManifest
+    [Contracts.dll v1.1.0] as Consumer_Contracts
+    [MyProducerPlugin.dll ] as Producer_Plugin_Ref <<Assembly Reference>>
+    Producer_Plugin_Ref .[#Magenta].> PluginRouter : request plugin dependency
+    [Dependency_A.dll v1.0.0]
+    note bottom of Consumer_Contracts
+        this context will receive contracts 
+        from host via shared types 
+        (so this will have the version from the host)
+    end note
+    note bottom of Producer_Plugin_Ref
+        this context will receive plugin type 
+        from the plugin context
+    end note
+}
+
+package "AsemblyLoadRouter"{
+    rectangle  "Registry <AssemblyName.Name, PluginLoadContext>" as PluginRouter #DarkSeaGreen {
+        
+    }
+    PluginRouter .[#Magenta].> Producer_Plugin_Dll : forward to plugin context
+    note top of PluginRouter
+        Forwards requests for plugins 
+        to the ManagedLoadContext 
+        of the requested plugin type
+    end note
+}
+
+package "DefaultContext" as Default_Context {
+    [Contracts.dll v1.2.0] -[#green]-> Consumer_Context : provide shared types
+    [Contracts.dll v1.2.0] -[#green]-> Producer_Context : provide shared types
+    [Contracts.dll v1.2.0] <.[#green]. Consumer_Contracts
+    [Contracts.dll v1.2.0] <.[#green]. Producer_Contracts
+}
+
+@enduml

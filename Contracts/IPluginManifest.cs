@@ -1,9 +1,10 @@
 ﻿namespace Contracts
 {
+    using System;
     using Microsoft.Extensions.DependencyInjection;
 
     public interface IPluginManifest
     {
-        void ConfigureServices(IServiceCollection services);
+        IServiceProvider GetServiceProvider(IServiceCollection hostServices);
     }
 }

@@ -4,9 +4,9 @@
     using Contracts;
     using Microsoft.Extensions.DependencyInjection;
 
-    public class PluginManifest : IPluginManifest
+    public class PluginManifest : PluginManifestBase
     {
-        public void ConfigureServices(IServiceCollection services)
+        protected override void ConfigureServices(IServiceCollection services)
         {
             Type serviceCollectionType = services.GetType();
             ConsoleLog.WriteAssemblyInformation("ProducerPlugin - PluginManifest", serviceCollectionType, typeof(IProducerPlugin), typeof(ProducerPlugin));

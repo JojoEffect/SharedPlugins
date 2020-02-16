@@ -7,18 +7,19 @@
 
     public static class ConsoleLog
     {
+        static readonly string Separator = new string('-', 50);
+
         public static void WriteAssemblyInformation(string comment = "", params Type[] types)
         {
             StringBuilder stringBuilder = new StringBuilder();
-            string separator = new string('-', 50);
 
             stringBuilder.AppendLine();
-            stringBuilder.Append(separator);
-            stringBuilder.AppendLine(separator);
-            stringBuilder.Append(separator);
+            stringBuilder.Append(Separator);
+            stringBuilder.AppendLine(Separator);
+            stringBuilder.Append(Separator);
             stringBuilder.AppendLine(comment);
-            stringBuilder.Append(separator);
-            stringBuilder.AppendLine(separator);
+            stringBuilder.Append(Separator);
+            stringBuilder.AppendLine(Separator);
             
             foreach (Type t in types)
             {
@@ -28,12 +29,50 @@
                 stringBuilder.AppendLine($"\tPath:\t{assembly.Location}");
                 stringBuilder.AppendLine($"\tName:\t{assembly.FullName}");
                 stringBuilder.AppendLine($"\tALC:\t{AssemblyLoadContext.GetLoadContext(assembly).Name}");
-                stringBuilder.Append(separator);
-                stringBuilder.AppendLine(separator);
+                stringBuilder.Append(Separator);
+                stringBuilder.AppendLine(Separator);
             }
 
-            stringBuilder.Append(separator);
-            stringBuilder.AppendLine(separator);
+            stringBuilder.Append(Separator);
+            stringBuilder.AppendLine(Separator);
+
+            Console.WriteLine(stringBuilder.ToString());
+        }
+
+        public static void WriteResolvingEvent(AssemblyLoadContext assemblyLoadContext, AssemblyName assemblyName)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder.AppendLine();
+            stringBuilder.Append(Separator);
+            stringBuilder.AppendLine(Separator);
+            stringBuilder.Append(Separator);
+            stringBuilder.AppendLine("Resolving event");
+            stringBuilder.Append(Separator);
+            stringBuilder.AppendLine(Separator);
+
+            stringBuilder.AppendLine($"\tName:\t{assemblyName.FullName}");
+            stringBuilder.AppendLine($"\tALC:\t{assemblyLoadContext.Name}");
+
+            stringBuilder.Append(Separator);
+            stringBuilder.AppendLine(Separator);
+            stringBuilder.Append(Separator);
+            stringBuilder.AppendLine(Separator);
+
+            Console.WriteLine(stringBuilder.ToString());
+        }
+
+        public static void WriteLoadContextLoadCall(AssemblyLoadContext loadContext, AssemblyName assemblyName)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder.AppendLine();
+            stringBuilder.Append(Separator);
+            stringBuilder.AppendLine(Separator);
+            stringBuilder.Append(Separator);
+            stringBuilder.AppendLine($"{loadContext.Name} Load({assemblyName.Name})");
+            stringBuilder.Append(Separator);
+            stringBuilder.AppendLine(Separator);
 
             Console.WriteLine(stringBuilder.ToString());
         }
